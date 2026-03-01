@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, EyeOff } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface TabWarningOverlayProps {
   countdown: number;
@@ -15,10 +15,14 @@ export default function TabWarningOverlay({ countdown }: TabWarningOverlayProps)
   const danger  = countdown <= 2;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md">
+    <div className={`fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-md transition-colors duration-500 ${
+      danger ? "bg-rose-950/98" : "bg-red-900/95"
+    }`}>
+      {/* Pulsing red background flash */}
+      <div className="absolute inset-0 bg-rose-600/10 animate-pulse pointer-events-none" />
       {/* Pulsing outer ring */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-96 h-96 rounded-full border-4 border-rose-500/20 animate-ping" />
+        <div className="w-96 h-96 rounded-full border-4 border-rose-500/40 animate-ping" />
       </div>
 
       <div className="relative flex flex-col items-center gap-7 text-center px-6 max-w-md animate-scale-in">
@@ -26,30 +30,30 @@ export default function TabWarningOverlay({ countdown }: TabWarningOverlayProps)
         {/* Icon */}
         <div className={`flex items-center justify-center w-24 h-24 rounded-full ring-4 transition-colors duration-300 ${
           danger
-            ? "bg-rose-700/60 ring-rose-500/60"
-            : "bg-amber-700/50 ring-amber-500/40"
+            ? "bg-rose-600/80 ring-white/60 animate-pulse"
+            : "bg-rose-700/60 ring-rose-400/60"
         }`}>
           {danger
-            ? <AlertTriangle className="w-12 h-12 text-rose-300" />
-            : <EyeOff className="w-12 h-12 text-amber-300" />
+            ? <AlertTriangle className="w-12 h-12 text-white" />
+            : <AlertTriangle className="w-12 h-12 text-rose-200" />
           }
         </div>
 
         {/* Heading */}
         <div className="space-y-3">
           <h1 className={`text-3xl font-black tracking-tight transition-colors duration-300 ${
-            danger ? "text-rose-400" : "text-amber-300"
+            danger ? "text-white animate-pulse" : "text-rose-300"
           }`}>
             {danger ? "⚠️ Final Warning!" : "🚨 Cheating Detected!"}
           </h1>
-          <p className="text-white text-base font-semibold leading-relaxed">
-            You&apos;ve been detected using <span className="text-yellow-300">Alt+Tab</span> or changing the tab to other apps.
+          <p className="text-rose-100 text-base font-semibold leading-relaxed">
+            You&apos;ve been detected using <span className="text-yellow-300 font-black">Alt+Tab</span> or changing the tab to other apps.
           </p>
-          <p className={`text-sm leading-relaxed transition-colors duration-300 ${
-            danger ? "text-rose-300 font-bold" : "text-slate-400"
+          <p className={`text-sm leading-relaxed font-bold transition-colors duration-300 ${
+            danger ? "text-white" : "text-rose-200"
           }`}>
             {danger
-              ? "Your exam will be PERMANENTLY VOIDED!"
+              ? "🔴 Your exam will be PERMANENTLY VOIDED!"
               : "Return to the exam tab immediately or your exam will be permanently voided."
             }
           </p>
