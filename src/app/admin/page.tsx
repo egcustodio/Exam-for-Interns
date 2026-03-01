@@ -14,6 +14,8 @@ import {
   AlertTriangle,
   XCircle,
   Award,
+  Link2,
+  Check,
 } from "lucide-react";
 
 interface CategoryBreakdown {
@@ -277,6 +279,7 @@ export default function AdminPage() {
   const [sortBy, setSortBy] = useState<"date" | "score" | "name">("date");
   const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
   const [filterVoided, setFilterVoided] = useState<"all" | "valid" | "voided">("all");
+  const [linkCopied, setLinkCopied] = useState(false);
 
   // Persist/clear the password in sessionStorage whenever it changes
   const setAdminPw = useCallback((pw: string | null) => {
@@ -357,7 +360,21 @@ export default function AdminPage() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => fetchResults(adminPw)}
+              onClick={() => {
+                const token = btoa(adminPw ?? "");
+                const url = `${window.location.origin}/unblock?token=${token}`;
+                navigator.clipboard.writeText(url);
+                setLinkCopied(true);
+                setTimeout(() => setLinkCopied(false), 3000);
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-emerald-400 bg-white/5 hover:bg-emerald-500/10 border border-white/10 rounded-xl transition-all"
+              title="Copy an unblock link to send to a locked device"
+            >
+              {linkCopied ? <Check size={14} className="text-emerald-400" /> : <Link2 size={14} />}
+              {linkCopied ? "Link Copied!" : "Unblock Device"}
+            </button>
+            <button
+              onClick={() => fetchResults(adminPw!)}
               disabled={loading}
               className="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all disabled:opacity-40"
             >
