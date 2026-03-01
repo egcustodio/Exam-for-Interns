@@ -42,7 +42,9 @@ export async function POST(req: NextRequest) {
     await saveResult(result);
 
     return NextResponse.json({ ok: true, id: result.id });
-  } catch {
-    return NextResponse.json({ error: "Failed to save result" }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[/api/submit] unhandled error:", message);
+    return NextResponse.json({ error: "Failed to save result", detail: message }, { status: 500 });
   }
 }
