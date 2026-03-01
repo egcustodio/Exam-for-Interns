@@ -264,6 +264,7 @@ export default function Home() {
         {state.status === "in-progress" && currentQuestion && (
           <div className="w-full max-w-3xl">
             <QuestionCard
+              key={currentQuestion.id}
               question={currentQuestion}
               questionNumber={state.currentQuestionIndex + 1}
               totalQuestions={totalQuestions}

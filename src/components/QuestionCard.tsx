@@ -24,27 +24,26 @@ export default function QuestionCard({
   const [selected, setSelected] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSelect = (idx: number) => {
-    if (submitting) return;
-    setSelected(idx);
-  };
+  // This component is keyed by question.id in page.tsx,
+  // so it fully remounts on each new question — no stale state issues.
 
   const handleConfirm = async () => {
     if (selected === null || submitting) return;
     setSubmitting(true);
-    await onAnswer(selected);
-    setSelected(null);
-    setSubmitting(false);
+    try {
+      await onAnswer(selected);
+    } catch {
+      // If the API call fails the parent still advances the question.
+      // Remount via key will reset submitting automatically.
+    }
+    // No need to reset state here — the key change remounts this component.
   };
 
   const handleSkip = () => {
     if (submitting) return;
     setSubmitting(true);
-    setTimeout(() => {
-      onSkip();
-      setSelected(null);
-      setSubmitting(false);
-    }, 150);
+    onSkip();
+    // Again, remount resets state.
   };
 
   return (
@@ -74,7 +73,7 @@ export default function QuestionCard({
           return (
             <button
               key={idx}
-              onClick={() => handleSelect(idx)}
+              onClick={() => { if (!submitting) setSelected(idx); }}
               disabled={submitting}
               className={`flex items-center gap-5 w-full px-7 py-5 rounded-2xl border text-left transition-all duration-150
                 ${isSelected
@@ -109,11 +108,13 @@ export default function QuestionCard({
         <button
           onClick={handleConfirm}
           disabled={selected === null || submitting}
-          className="px-10 py-4 bg-indigo-600 hover:bg-indigo-500
-            disabled:opacity-30 disabled:cursor-not-allowed
-            text-white text-base font-bold rounded-2xl transition-all"
+          className={`px-10 py-4 text-white text-base font-bold rounded-2xl transition-all
+            ${submitting
+              ? "bg-indigo-700 opacity-60 cursor-wait"
+              : "bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed"
+            }`}
         >
-          Confirm Answer
+          {submitting ? "Checking…" : "Confirm Answer"}
         </button>
       </div>
     </div>
