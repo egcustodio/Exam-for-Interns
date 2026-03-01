@@ -1,4 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tech Intern Exam App
+
+A **game-like programming examination web app** for tech interns, built with **Next.js 16**, **TypeScript**, and **Tailwind CSS v4**.
+
+## Features
+
+- 🎮 **Game-like UI** — dark theme, animations, score tracking, countdown timer
+- 📚 **40 questions** across 5 technology sections (8 per section):
+  - 🎨 HTML / CSS
+  - ⚡ JavaScript
+  - 🔀 Git
+  - 🗄️ Databases
+  - 💡 General Programming
+- ✅ **Instant feedback** — colour-coded answer reveals with explanations
+- 🏆 **Results screen** — overall score with per-category breakdown & rank
+- 🔒 **Anti-cheat measures**:
+  - Copy / cut / paste disabled
+  - Right-click context menu blocked
+  - Keyboard shortcuts (Ctrl+C, Ctrl+V, PrintScreen, F12, …) blocked
+  - CSS `user-select: none` applied during the exam
+
+## Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| State | React hooks (useState, useEffect, useCallback) |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── globals.css        # Global styles + animations
+│   ├── layout.tsx         # Root layout with metadata
+│   └── page.tsx           # Main exam page (orchestrator)
+├── components/
+│   ├── CategoryBadge.tsx  # Coloured category pill
+│   ├── IntroScreen.tsx    # Rules & start screen
+│   ├── ProgressBar.tsx    # Question progress indicator
+│   ├── QuestionCard.tsx   # Question + options + feedback
+│   ├── ResultsScreen.tsx  # Score summary & breakdown
+│   └── Timer.tsx          # Countdown clock
+├── data/
+│   └── questions.ts       # All 40 questions + config constants
+├── hooks/
+│   ├── useAntiCheat.ts    # Anti-cheat event listeners
+│   └── useExam.ts         # Exam state machine + timer logic
+└── types/
+    └── exam.ts            # Shared TypeScript types
+```
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Run production build |
+| `npm run lint` | Lint source files |
+
 
 ## Getting Started
 
