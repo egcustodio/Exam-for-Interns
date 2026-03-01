@@ -149,10 +149,11 @@ export default function useExam() {
       localStorage.setItem(VOID_LOCK_KEY, new Date().toISOString());
     }
     setIsDeviceLocked(true);
+    // Keep all exam data (answers, examQuestions, startedAt) intact so the
+    // auto-submit useEffect can read them — only flip the status to "voided".
     setState((prev) => ({
-      ...INITIAL_STATE,
+      ...prev,
       status: "voided" as ExamState["status"],
-      playerName: prev.playerName,
     }));
   }, [stopTimer]);
 
@@ -163,7 +164,7 @@ export default function useExam() {
     if (state.status !== "finished" && state.status !== "voided") return;
 
     // Build a key to avoid double-submitting the same result
-    const key = `${state.status}:${state.playerName}:${state.startedAt}`;
+    const key = `${state.status}:${state.playerName}:${state.startedAt ?? Date.now()}`;
     if (submittedRef.current === key) return;
     submittedRef.current = key;
 
