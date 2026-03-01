@@ -118,6 +118,7 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Admin password"
             autoFocus
+            suppressHydrationWarning
             className="w-full bg-white/5 border border-white/15 rounded-xl px-5 py-4 text-white placeholder-slate-600
               focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
           />
@@ -129,6 +130,7 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
           <button
             type="submit"
             disabled={loading || password.length === 0}
+            suppressHydrationWarning
             className="py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl
               disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
