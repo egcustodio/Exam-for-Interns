@@ -15,6 +15,9 @@ export interface CategoryResult {
   percentage: number;
 }
 
+/** Question as held in client state — includes correctIndex for instant grading. */
+export type ExamQuestion = Question & { correctIndex: number };
+
 export interface ExamState {
   status: ExamStatus;
   playerName: string;
@@ -22,5 +25,5 @@ export interface ExamState {
   answers: Answer[];
   timeRemaining: number;
   startedAt: number | null;
-  examQuestions: Question[];
+  examQuestions: ExamQuestion[];
 }

@@ -202,3 +202,34 @@ export function buildExam(): Question[] {
 
   return [...mainSections.flat(), ...bonusPool].map(strip);
 }
+
+/** Same as buildExam() but includes correctIndex for instant client-side grading. */
+export function buildExamWithAnswers(): (Question & { correctIndex: number })[] {
+  const withAnswer = (q: QuestionWithAnswer): Question & { correctIndex: number } => ({
+    id: q.id,
+    category: q.category,
+    question: q.question,
+    options: q.options,
+    correctIndex: q.correctIndex,
+  });
+
+  const categories: Category[] = [
+    "CSS & Styling",
+    "Coding & Deployment",
+    "Programming",
+    "Databases",
+    "Fundamentals & Technology",
+  ];
+
+  const mainSections = shuffleServer(
+    categories.map((cat) => {
+      const pool = questionBank.filter((q) => q.category === cat);
+      return shuffleServer(pool).slice(0, QUESTIONS_PER_SECTION);
+    })
+  );
+  const bonusPool = shuffleServer(
+    questionBank.filter((q) => q.category === "Bonus")
+  ).slice(0, BONUS_QUESTIONS_COUNT);
+
+  return [...mainSections.flat(), ...bonusPool].map(withAnswer);
+}

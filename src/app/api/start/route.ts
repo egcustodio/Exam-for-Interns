@@ -2,12 +2,14 @@
  * POST /api/start
  *
  * Builds a randomised exam on the server and returns the question list.
- * Only client-safe Question objects (no correctIndex / explanation) are sent.
+ * correctIndex is included so the client can grade instantly without a
+ * round-trip to /api/check on every answer.
+ * Options are already shuffled server-side so the correct position varies.
  */
 import { NextResponse } from "next/server";
-import { buildExam } from "@/data/questionBank.server";
+import { buildExamWithAnswers } from "@/data/questionBank.server";
 
 export async function POST() {
-  const questions = buildExam();
+  const questions = buildExamWithAnswers();
   return NextResponse.json({ questions });
 }

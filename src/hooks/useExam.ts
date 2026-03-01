@@ -80,33 +80,13 @@ export default function useExam() {
 
   const answerQuestion = useCallback(
     async (selectedIndex: number) => {
-      // Capture current question before any state change
-      let questionId = -1;
+      // Grade instantly client-side using the correctIndex loaded at exam start.
+      // No network round-trip needed — /api/check is no longer called.
       setState((prev) => {
         if (prev.status !== "in-progress") return prev;
-        questionId = prev.examQuestions[prev.currentQuestionIndex].id;
-        return prev; // no change yet
-      });
-      if (questionId === -1) return;
-
-      // Ask the server — answers never evaluated on the client
-      let isCorrect = false;
-      try {
-        const res = await fetch("/api/check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId, selectedIndex }),
-        });
-        const data: { isCorrect: boolean } = await res.json();
-        isCorrect = data.isCorrect;
-      } catch {
-        // Network error — count as incorrect, continue exam
-        isCorrect = false;
-      }
-
-      setState((prev) => {
-        if (prev.status !== "in-progress") return prev;
-        const newAnswer: Answer = { questionId, selectedIndex, isCorrect };
+        const currentQ = prev.examQuestions[prev.currentQuestionIndex];
+        const isCorrect = selectedIndex === currentQ.correctIndex;
+        const newAnswer: Answer = { questionId: currentQ.id, selectedIndex, isCorrect };
         const updatedAnswers = [...prev.answers, newAnswer];
         const nextIndex = prev.currentQuestionIndex + 1;
         const isLast = nextIndex >= prev.examQuestions.length;
