@@ -14,9 +14,17 @@ const INITIAL_STATE: ExamState = {
   examQuestions: [],
 };
 
+const VOID_LOCK_KEY = "techquiz_voided_lock";
+
 export default function useExam() {
   const [state, setState] = useState<ExamState>(INITIAL_STATE);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // ── Device lock (persists across page reloads via localStorage) ────────────
+  const [isDeviceLocked, setIsDeviceLocked] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Boolean(localStorage.getItem(VOID_LOCK_KEY));
+  });
 
   // ── Timer ──────────────────────────────────────────────────────────────────
   const stopTimer = useCallback(() => {
@@ -136,6 +144,11 @@ export default function useExam() {
 
   const voidExam = useCallback(() => {
     stopTimer();
+    // Write permanent device lock to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem(VOID_LOCK_KEY, new Date().toISOString());
+    }
+    setIsDeviceLocked(true);
     setState((prev) => ({
       ...INITIAL_STATE,
       status: "voided" as ExamState["status"],
@@ -196,6 +209,7 @@ export default function useExam() {
     currentQuestion,
     totalQuestions,
     score,
+    isDeviceLocked,
     setPlayerName,
     showIntro,
     startExam,

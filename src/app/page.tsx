@@ -61,6 +61,7 @@ export default function Home() {
     currentQuestion,
     totalQuestions,
     score,
+    isDeviceLocked,
     showIntro,
     startExam,
     answerQuestion,
@@ -79,6 +80,17 @@ export default function Home() {
   const timeSpent = TOTAL_TIME_SECONDS - state.timeRemaining;
   const canProceed = landingName.trim().length >= 2;
 
+  // Device is permanently locked — show blocked screen immediately
+  if (isDeviceLocked) {
+    return (
+      <VoidedScreen
+        playerName=""
+        locked={true}
+        onRestart={restartExam}
+      />
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#0d0221] text-white flex flex-col overflow-x-hidden">
 
@@ -87,7 +99,7 @@ export default function Home() {
 
       {/* ── Voided screen ───────────────────────────────────────────────────── */}
       {state.status === "voided" && (
-        <VoidedScreen playerName={state.playerName} onRestart={restartExam} />
+        <VoidedScreen playerName={state.playerName} locked={true} onRestart={restartExam} />
       )}
 
       {/* ── Exam header ─────────────────────────────────────────────────────── */}
