@@ -264,13 +264,29 @@ function ResultRow({
 }
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
+const SESSION_KEY = "admin_pw_session";
+
 export default function AdminPage() {
-  const [adminPw, setAdminPw] = useState<string | null>(null);
+  const [adminPw, setAdminPwState] = useState<string | null>(() => {
+    // Restore password from sessionStorage on page reload
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem(SESSION_KEY);
+  });
   const [results, setResults] = useState<ExamResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<"date" | "score" | "name">("date");
   const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
   const [filterVoided, setFilterVoided] = useState<"all" | "valid" | "voided">("all");
+
+  // Persist/clear the password in sessionStorage whenever it changes
+  const setAdminPw = useCallback((pw: string | null) => {
+    if (pw) {
+      sessionStorage.setItem(SESSION_KEY, pw);
+    } else {
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+    setAdminPwState(pw);
+  }, []);
 
   const fetchResults = useCallback(
     async (pw: string) => {
